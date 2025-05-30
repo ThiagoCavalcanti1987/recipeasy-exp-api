@@ -9,6 +9,7 @@
 
     <!-- Enforce indentation level -->
     <module name="TreeWalker">
+        <!-- Indentation Configuration -->
         <module name="Indentation">
             <property name="basicOffset" value="4"/>
             <property name="braceAdjustment" value="0"/>
@@ -17,14 +18,21 @@
         </module>
 
         <!-- Enforce naming conventions -->
-        <module name="TreeWalker">
-            <module name="TypeName"/>
-            <module name="MethodName"/>
-            <module name="LocalVariableName"/>
-        </module>
+        <module name="TypeName"/>
+        <module name="MethodName"/>
+        <module name="LocalVariableName"/>
+
+        <!-- Enforce Javadoc comments -->
+        <module name="JavadocType"/>
+        <module name="JavadocMethod"/>
+
+        <!-- Ensure no unused imports -->
+        <module name="UnusedImports"/>
     </module>
 
-    <!-- Enforce Javadoc comments -->
-    <module name="JavadocType"/>
-    <module name="JavadocMethod"/>
+    <!-- Ensure file does not contain trailing whitespaces -->
+    <module name="RegexpSingleline">
+        <property name="format" value="\s+$"/>
+        <property name="message" value="Line has trailing spaces."/>
+    </module>
 </module>

@@ -2,7 +2,7 @@ package com.example.recipeasy.model;
 
 public enum RoleType {
     ADMIN("ADMIN"),
-    USER("user");
+    USER("USER");
 
     private String role;
 

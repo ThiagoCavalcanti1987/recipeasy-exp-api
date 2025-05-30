@@ -21,77 +21,77 @@ import java.util.*;
 @AllArgsConstructor
 public class UsuarioModel implements UserDetails {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private UUID id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private UUID id;
 
-        @Column(nullable = false)
-        private String nome;
+    @Column(nullable = false)
+    private String nome;
 
-        @Column(nullable = false, unique = true)
-        private String email;
+    @Column(nullable = false, unique = true)
+    private String email;
 
-        @Column(nullable = false)
-        private String senha;
+    @Column(nullable = false)
+    private String senha;
 
-        @Enumerated(EnumType.STRING)
-        @Column(name = "role_type",nullable = false)
-        private RoleType role;
-
-
-        @Column(name = "data_criacao",nullable = false, updatable = false)
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
-        private LocalDateTime dataCriacao;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role_type", nullable = false)
+    private RoleType role;
 
 
-        @OneToMany(mappedBy = "usuario")
-        private Set<ReceitaModel> receitas = new HashSet<>();
+    @Column(name = "data_criacao", nullable = false, updatable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
+    private LocalDateTime dataCriacao;
 
-        @PrePersist
-        protected void onCreate() {
-                if (this.dataCriacao == null) {
-                        this.dataCriacao = LocalDateTime.now();
-                }
+
+    @OneToMany(mappedBy = "usuario")
+    private Set<ReceitaModel> receitas = new HashSet<>();
+
+    @PrePersist
+    protected void onCreate() {
+        if (this.dataCriacao == null) {
+            this.dataCriacao = LocalDateTime.now();
         }
+    }
 
-        @Override
-        public Collection<? extends GrantedAuthority> getAuthorities() {
-               if (this.role == RoleType.ADMIN){
-                       return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"),
-                               new SimpleGrantedAuthority("ROLE_USER"));
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (this.role == RoleType.ADMIN) {
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"),
+                    new SimpleGrantedAuthority("ROLE_USER"));
 
-               }else{
-                       return List.of(new SimpleGrantedAuthority("ROLE_USER"));
-               }
+        } else {
+            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
         }
+    }
 
-        @Override
-        public String getPassword() {
-                return senha;
-        }
+    @Override
+    public String getPassword() {
+        return senha;
+    }
 
-        @Override
-        public String getUsername() {
-                return email;
-        }
+    @Override
+    public String getUsername() {
+        return email;
+    }
 
-        @Override
-        public boolean isAccountNonExpired() {
-                return true;//UserDetails.super.isAccountNonExpired();
-        }
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;//UserDetails.super.isAccountNonExpired();
+    }
 
-        @Override
-        public boolean isAccountNonLocked() {
-                return true;//UserDetails.super.isAccountNonLocked();
-        }
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;//UserDetails.super.isAccountNonLocked();
+    }
 
-        @Override
-        public boolean isCredentialsNonExpired() {
-                return true;//UserDetails.super.isCredentialsNonExpired();
-        }
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;//UserDetails.super.isCredentialsNonExpired();
+    }
 
-        @Override
-        public boolean isEnabled() {
-                return true;//UserDetails.super.isEnabled();
-        }
+    @Override
+    public boolean isEnabled() {
+        return true;//UserDetails.super.isEnabled();
+    }
 }
