@@ -1,57 +1,56 @@
 package com.example.recipeasy.controller;
 
-import com.example.recipeasy.model.UsuarioModel;
+import com.example.recipeasy.dto.UsuarioRequestDTO;
+import com.example.recipeasy.dto.UsuarioResponseDTO;
 import com.example.recipeasy.service.UsuarioService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/recipeasy/usuarios")
 public class UsuarioController {
 
-    @Autowired
-    private UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
 
-    @GetMapping("/findAll")
-    public List<UsuarioModel> getAllUsuarios() {
-        return usuarioService.findAll();
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
     }
 
-    @GetMapping("/findId/{id}")
-    public ResponseEntity<UsuarioModel> getUsuarioById(@PathVariable UUID id) {
-        Optional<UsuarioModel> usuario = usuarioService.findById(id);
-        return usuario.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping
+    public ResponseEntity<List<UsuarioResponseDTO>> findAll() {
+        return ResponseEntity.ok(usuarioService.findAll());
     }
 
-    @PostMapping("/create")
-    public UsuarioModel createUsuario(@RequestBody UsuarioModel usuario) {
-        return usuarioService.save(usuario);
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuarioResponseDTO> findById(@PathVariable UUID id) {
+        return ResponseEntity.ok(usuarioService.findById(id));
     }
 
-    /*@PutMapping("/update/{id}")
-    public ResponseEntity<UsuarioModel> updateUsuario(@PathVariable UUID id, @RequestBody UsuarioModel usuarioDetails) {
-        Optional<UsuarioModel> usuario = usuarioService.findById(id);
-        if (usuario.isPresent()) {
+    @PostMapping
+    public ResponseEntity<UsuarioResponseDTO> create(@RequestBody @Valid UsuarioRequestDTO request) {
+        UsuarioResponseDTO created = usuarioService.create(request);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(created.id())
+                .toUri();
+        return ResponseEntity.created(location).body(created);
+    }
 
-            return ResponseEntity.ok(usuarioService.save(existingUsuario));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }*/
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuarioResponseDTO> update(@PathVariable UUID id,
+                                                     @RequestBody @Valid UsuarioRequestDTO request) {
+        return ResponseEntity.ok(usuarioService.update(id, request));
+    }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteUsuario(@PathVariable UUID id) {
-        if (usuarioService.findById(id).isPresent()) {
-            usuarioService.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        usuarioService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }

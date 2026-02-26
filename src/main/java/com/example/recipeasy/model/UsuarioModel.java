@@ -2,10 +2,6 @@ package com.example.recipeasy.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,14 +11,10 @@ import java.util.*;
 
 @Entity
 @Table(name = "usuarios")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class UsuarioModel implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(nullable = false)
@@ -38,14 +30,82 @@ public class UsuarioModel implements UserDetails {
     @Column(name = "role_type", nullable = false)
     private RoleType role;
 
-
     @Column(name = "data_criacao", nullable = false, updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime dataCriacao;
 
-
     @OneToMany(mappedBy = "usuario")
     private Set<ReceitaModel> receitas = new HashSet<>();
+
+    public UsuarioModel() {
+    }
+
+    public UsuarioModel(UUID id, String nome, String email, String senha, RoleType role,
+                        LocalDateTime dataCriacao, Set<ReceitaModel> receitas) {
+        this.id = id;
+        this.nome = nome;
+        this.email = email;
+        this.senha = senha;
+        this.role = role;
+        this.dataCriacao = dataCriacao;
+        this.receitas = receitas;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public RoleType getRole() {
+        return role;
+    }
+
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
+    }
+
+    public Set<ReceitaModel> getReceitas() {
+        return receitas;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
+    public void setRole(RoleType role) {
+        this.role = role;
+    }
+
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+
+    public void setReceitas(Set<ReceitaModel> receitas) {
+        this.receitas = receitas;
+    }
 
     @PrePersist
     protected void onCreate() {
@@ -59,7 +119,6 @@ public class UsuarioModel implements UserDetails {
         if (this.role == RoleType.ADMIN) {
             return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"),
                     new SimpleGrantedAuthority("ROLE_USER"));
-
         } else {
             return List.of(new SimpleGrantedAuthority("ROLE_USER"));
         }
@@ -77,21 +136,21 @@ public class UsuarioModel implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;//UserDetails.super.isAccountNonExpired();
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;//UserDetails.super.isAccountNonLocked();
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;//UserDetails.super.isCredentialsNonExpired();
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return true;//UserDetails.super.isEnabled();
+        return true;
     }
 }
