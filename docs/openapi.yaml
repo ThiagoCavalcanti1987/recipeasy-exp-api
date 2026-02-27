@@ -1,0 +1,176 @@
+openapi: 3.0.3
+info:
+  title: Recipeasy API
+  version: 0.1.0
+  description: OpenAPI spec gerado para Recipeasy API
+servers:
+  - url: http://localhost:8080
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    AuthRequest:
+      type: object
+      properties:
+        login:
+          type: string
+        senha:
+          type: string
+      required: [login, senha]
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+    UsuarioRequest:
+      type: object
+      properties:
+        nome:
+          type: string
+        email:
+          type: string
+        senha:
+          type: string
+        role:
+          type: string
+      required: [nome, email, senha, role]
+    UsuarioResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        nome:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+        dataCriacao:
+          type: string
+          format: date-time
+paths:
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+      responses:
+        '200':
+          description: Token JWT
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+  /auth/dev-token:
+    get:
+      tags: [Auth]
+      summary: Gera token admin apenas em ambiente de desenvolvimento
+      responses:
+        '200':
+          description: Token JWT de desenvolvimento
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+  /recipeasy/usuarios:
+    get:
+      tags: [Usuarios]
+      summary: Lista usuarios (ADMIN)
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de usuarios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsuarioResponse'
+    post:
+      tags: [Usuarios]
+      summary: Cria usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioRequest'
+      responses:
+        '201':
+          description: Usuario criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioResponse'
+  /recipeasy/usuarios/{id}:
+    get:
+      tags: [Usuarios]
+      summary: Obtem usuario por id
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Usuario
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioResponse'
+    put:
+      tags: [Usuarios]
+      summary: Atualiza usuario por id
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioRequest'
+      responses:
+        '200':
+          description: Usuario atualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioResponse'
+    delete:
+      tags: [Usuarios]
+      summary: Remove usuario  por id
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Removido
+security:
+  - bearerAuth: []

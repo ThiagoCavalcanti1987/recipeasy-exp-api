@@ -4,12 +4,15 @@ import com.example.recipeasy.dto.LoginResponseDTO;
 import com.example.recipeasy.model.AuthModel;
 import com.example.recipeasy.model.UsuarioModel;
 import com.example.recipeasy.service.TokenService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Auth", description = "Autenticação e geração de tokens")
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -22,6 +25,7 @@ public class AuthController {
         this.tokenService = tokenService;
     }
 
+    @Operation(summary = "Login", description = "Autentica usuário e retorna JWT")
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid AuthModel data) {
         var userNamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.senha());

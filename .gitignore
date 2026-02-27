@@ -33,4 +33,6 @@ build/
 .vscode/
 
 ### Project ###
-curls.md
+docs/curls.md
+/mvnw
+/mvnw.cmd
