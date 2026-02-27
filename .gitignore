@@ -33,4 +33,4 @@ build/
 .vscode/
 
 ### Project ###
-curls.md
+docs/curls.md
