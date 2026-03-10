@@ -12,6 +12,7 @@ public record UsuarioResponseDTO(
         String nome,
         String email,
         RoleType role,
+        String senha,
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
         LocalDateTime dataCriacao
 ) {
@@ -22,6 +23,7 @@ public record UsuarioResponseDTO(
                 usuario.getNome(),
                 usuario.getEmail(),
                 usuario.getRole(),
+                usuario.getSenha(),
                 usuario.getDataCriacao()
         );
     }

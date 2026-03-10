@@ -10,7 +10,7 @@ import java.util.UUID;
 @Table(name = "refeicoes")
 public class RefeicaoModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     @Column
     private String tipo;

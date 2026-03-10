@@ -24,6 +24,7 @@ public class TokenService {
             return JWT.create()
                     .withIssuer("recipeasy-api")
                     .withSubject(usuario.getEmail())
+                    .withClaim("role", usuario.getRole().name())
                     .withExpiresAt(generateExpirationDate())
                     .sign(algorithm);
         } catch (JWTCreationException exception) {
